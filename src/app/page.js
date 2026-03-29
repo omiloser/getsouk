@@ -114,7 +114,7 @@ export default function LandingPage() {
               <ul style={{ textAlign: 'left', listStyle: 'none', padding: 0, marginBottom: 28 }}>
                 {features.map(f => (
                   <li key={f} style={{ padding: '6px 0', fontSize: 15, color: '#444' }}>
-                    <span style={{ color: TEAL, marginRight: 8 }}>checkmark</span>{f}
+                    <span style={{ color: TEAL, marginRight: 8 }}>✓</span>{f}
                   </li>
                 ))}
               </ul>
