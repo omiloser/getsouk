@@ -126,7 +126,7 @@ const StepContact = ({ data, onChange, onNext, onBack }) => (
           style={{ padding: '10px 12px', border: '1.5px solid #D6D3D1', borderRadius: 10, fontSize: 14, background: '#fff', cursor: 'pointer', flexShrink: 0 }}>
           {WHATSAPP_COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.flag} {c.code}</option>)}
         </select>
-        <input value={data.waNumber} onChange={e => onChange({ waNumber: e.target.value })} placeholder="50 123 4567"
+        <input value={data.waNumber} onChange={e => onChange({ waNumber: e.target.value })} placeholder="12345 6789"
           style={{ flex: 1, padding: '10px 14px', border: '1.5px solid #D6D3D1', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', color: DARK }} />
       </div>
     </div>
@@ -151,7 +151,7 @@ const StepContact = ({ data, onChange, onNext, onBack }) => (
 )
 
 const StepProducts = ({ data, onChange, onNext, onBack }) => {
-  const products = data.products || [{ name: '', description: '', price: '', emoji: '🛍️' }]
+  const products = data.products || [{ name: '', description: '', price: '', emoji: '🛍️', imageUrl: '' }]
   const updateProduct = (i, field, value) => {
     onChange({ products: products.map((p, idx) => idx === i ? { ...p, [field]: value } : p) })
   }
@@ -168,17 +168,34 @@ const StepProducts = ({ data, onChange, onNext, onBack }) => {
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#EF4444', fontSize: 18, padding: 0 }}>✕</button>
             )}
           </div>
+          {/* Product photo */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#57534E', marginBottom: 8 }}>Icon</div>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {PRODUCT_EMOJIS.map(em => (
-                <span key={em} onClick={() => updateProduct(i, 'emoji', em)} style={{
-                  fontSize: 20, cursor: 'pointer', padding: 4, borderRadius: 8,
-                  background: product.emoji === em ? `${TEAL}22` : 'transparent',
-                  border: product.emoji === em ? `1.5px solid ${TEAL}` : '1.5px solid transparent',
-                }}>{em}</span>
-              ))}
-            </div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#57534E', marginBottom: 8 }}>Product photo</div>
+            {product.imageUrl ? (
+              <div style={{ position: 'relative', marginBottom: 8 }}>
+                <img src={product.imageUrl} alt="product"
+                  style={{ width: '100%', height: 140, objectFit: 'cover', borderRadius: 10, display: 'block', border: '1.5px solid #E7E5E4' }} />
+                <button onClick={() => updateProduct(i, 'imageUrl', '')}
+                  style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '50%', width: 26, height: 26, color: '#fff', cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              </div>
+            ) : (
+              <div>
+                <input type="text" placeholder="Paste image URL (e.g. from Instagram, Google Drive…)"
+                  value={product.imageUrl || ''}
+                  onChange={e => updateProduct(i, 'imageUrl', e.target.value)}
+                  style={{ width: '100%', boxSizing: 'border-box', padding: '10px 14px', border: '1.5px solid #D6D3D1', borderRadius: 10, fontSize: 13, outline: 'none', background: '#fff', color: DARK, marginBottom: 8 }} />
+                <div style={{ fontSize: 11, color: '#A8A29E', marginBottom: 8 }}>No image? Pick an icon:</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {PRODUCT_EMOJIS.map(em => (
+                    <span key={em} onClick={() => updateProduct(i, 'emoji', em)} style={{
+                      fontSize: 20, cursor: 'pointer', padding: 4, borderRadius: 8,
+                      background: product.emoji === em ? `${TEAL}22` : 'transparent',
+                      border: product.emoji === em ? `1.5px solid ${TEAL}` : '1.5px solid transparent',
+                    }}>{em}</span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <Input placeholder="Product name *" value={product.name} onChange={e => updateProduct(i, 'name', e.target.value)} />
           <Textarea placeholder="Short description (optional)" value={product.description} onChange={e => updateProduct(i, 'description', e.target.value)} />
@@ -281,7 +298,7 @@ export default function SoukBuilder() {
     storeName: '', tagline: '', category: 'Fashion & Clothing',
     instagramHandle: '', waPrefix: '+971', waNumber: '',
     currency: 'AED', themeColor: TEAL,
-    products: [{ name: '', description: '', price: '', emoji: '👗' }],
+    products: [{ name: '', description: '', price: '', emoji: '👗', imageUrl: '' }],
   })
 
   const update = patch => setData(d => ({ ...d, ...patch }))
@@ -324,6 +341,7 @@ export default function SoukBuilder() {
             description: p.description || null,
             price: p.price || null,
             emoji: p.emoji || '🛍️',
+            image_url: p.imageUrl || null,
           })))
         if (productsError) throw productsError
       }
